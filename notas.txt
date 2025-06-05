@@ -1,0 +1,7 @@
+# Crear la estructura de carpetas
+mkdir -p routes
+touch db.js
+touch index.js
+touch routes/therapists.js
+touch .env
+touch package.json

@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-app.use('/therapists', therapistsRouter);
+app.use('/api/therapists', therapistsRouter);
 app.use('/api/session-rates', sesionRatesRouter);
 app.use('/api/patients', patientsRouter);
 app.use('/api/homes', homesRouter);

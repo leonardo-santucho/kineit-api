@@ -1,11 +1,14 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import pool from '../db.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js'; // ⬅️ Importar middleware
 
 const router = express.Router();
 
+// ✅ Ruta protegida
 router.get(
   '/',
+  // authenticateToken, // ⬅️ Agregar aquí el middleware
   asyncHandler(async (req, res, next) => {
     try {
       const { active } = req.query;
@@ -20,12 +23,12 @@ router.get(
       res.json(rows);
     } catch (error) {
       console.error('Error fetching patients:', error);
-      next(error); // Pasa el error al middleware de manejo de errores
+      next(error);
     }
   })
 );
 
-// Middleware de manejo de errores
+// Manejo de errores
 router.use((err, req, res, next) => {
   res.status(500).json({
     error: 'Internal Server Error',

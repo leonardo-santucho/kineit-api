@@ -9,6 +9,7 @@ import patientsRouter from './routes/patients.js';
 import homesRouter from './routes/homes.js';
 import sessionRoutes from './routes/sessions.js';
 import monthlyNotesRoutes from './routes/monthlyNotes.js';
+import authRouter from './routes/auth.js';
 
 
 dotenv.config();
@@ -25,7 +26,7 @@ app.use('/api/patients', patientsRouter);
 app.use('/api/homes', homesRouter);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/monthly-notes', monthlyNotesRoutes);
-
+app.use('/api/auth', authRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);

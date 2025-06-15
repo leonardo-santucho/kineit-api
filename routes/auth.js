@@ -9,8 +9,13 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret';
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1 AND active = TRUE', [email]);
+    const result = await pool.query(`SELECT u.*, t.id AS therapist_id 
+   FROM users u
+   LEFT JOIN therapists t ON t.user_id = u.id
+   WHERE u.email = $1 AND u.active IS TRUE`, [email]);
     const user = result.rows[0];
+
+    console.log('User encontrado:', user);
 
     if (!user) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
 
@@ -18,12 +23,12 @@ router.post('/login', async (req, res) => {
     if (!match) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, name: user.name },
+      { id: user.id, email: user.email, role: user.role, name: user.name, therapist_id: user.therapist_id || null },
       JWT_SECRET,
       { expiresIn: '12h' }
     );
 
-    res.json({ token, user: { id: user.id, name: user.name, role: user.role, email: user.email } });
+    res.json({ token, user: { id: user.id, name: user.name, role: user.role, email: user.email,  therapist_id: user.therapist_id || null } });
   } catch (err) {
     console.error('Error en login:', err);
     res.status(500).json({ error: 'Error en el servidor' });

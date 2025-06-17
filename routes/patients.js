@@ -1,22 +1,28 @@
+// routes/patients.js
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import pool from '../db.js';
-import { authenticateToken } from '../middlewares/authMiddleware.js'; // ⬅️ Importar middleware
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// ✅ Ruta protegida
+// ✅ Ruta protegida con filtros por active y home_id
 router.get(
   '/',
-  // authenticateToken, // ⬅️ Agregar aquí el middleware
+  // authenticateToken,
   asyncHandler(async (req, res, next) => {
     try {
-      const { active } = req.query;
+      const { active, home_id } = req.query;
       let query = 'SELECT * FROM patients WHERE 1=1';
       const params = [];
 
       if (active === 'true') {
         query += ` AND active IS TRUE`;
+      }
+
+      if (home_id) {
+        query += ` AND id_home = $${params.length + 1}`;
+        params.push(home_id);
       }
 
       const { rows } = await pool.query(query, params);
